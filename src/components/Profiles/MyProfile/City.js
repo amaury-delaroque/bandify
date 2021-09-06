@@ -1,33 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Localisation from 'src/components/Localisation';
+import { firstLetterToUpper, restToLower } from 'src/selectors/city';
 
 const City = ({
-  editCity, handleSubmitCity, onCityChange, city, editFormToggle, user,
+  editCity, handleSubmitCity, onCityChange, city, editFormToggle, user, isEditing,
 }) => (
   <>
-    {editCity ? (
+    {isEditing && editCity ? (
       <form type="submit" onSubmit={handleSubmitCity}>
         <Localisation
           city={city}
           onChangeInput={onCityChange}
         />
-        <button type="submit">Envoyer</button>
-        <button
-          type="button"
-          onClick={() => editFormToggle('editCity')}
-          className="myprofile__user--close-edit-city"
-        >
-          <i className="fas fa-times-circle" />
-        </button>
+        <div className="myprofile__user--submit-container">
+          <button className="myprofile__user--edit-submit-btn" type="submit">Envoyer</button>
+          <button
+            type="button"
+            onClick={() => editFormToggle('editCity')}
+            className="myprofile__user--close-edit-btn"
+          >
+            <i className="fas fa-times-circle" />
+          </button>
+        </div>
       </form>
     ) : (
-      <p className="myprofile__user--name">Ville:
+      <p className="myprofile__user--name">
         {user.city && (
         <span>
-          {user.city.city_name} ({user.city.department_code})
+          {firstLetterToUpper(restToLower(user.city.city_name))} ({user.city.department_code})
         </span>
         )}
+        {isEditing && (
         <span>
           <button
             type="button"
@@ -37,6 +41,7 @@ const City = ({
             <i className="fas fa-pen" />
           </button>
         </span>
+        )}
       </p>
     )}
   </>
@@ -50,6 +55,7 @@ City.propTypes = {
     }),
   }),
   editCity: PropTypes.bool.isRequired,
+  isEditing: PropTypes.bool.isRequired,
   handleSubmitCity: PropTypes.func.isRequired,
   onCityChange: PropTypes.func.isRequired,
   city: PropTypes.string.isRequired,

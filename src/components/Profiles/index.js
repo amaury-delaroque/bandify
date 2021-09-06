@@ -27,17 +27,13 @@ const Profiles = ({
   lastName,
   dateOfBirth,
   emailInput,
-  password,
   description,
-  passwordShown,
-  togglePasswordVisibility,
   onChangeProfileInput,
   handleSubmitPhoto,
   handleSubmitName,
   handleSubmitEmail,
   handleSubmitBirthdate,
   handleSubmitDescription,
-  handleSubmitPassword,
   handleSubmitCity,
   handleSubmitStyles,
   handleSubmitInstruments,
@@ -46,10 +42,12 @@ const Profiles = ({
   instruments,
   instrumentsData,
   levelsData,
+  stylesData,
   onSelectInput,
   addNewInstrument,
   removeInstrument,
   deleteInstrumentAssociation,
+  isEditing,
   sendInvitation,
   pendingInvitations,
   friends,
@@ -57,6 +55,10 @@ const Profiles = ({
   wishToDeleteFriend,
   isDeleteFriendModalOpen,
   deleteFromFriendList,
+  isProfileMenuOpen,
+  toggleProfileMenuOpen,
+  isLoading,
+  deleteStyle,
 }) => {
   const url = window.location.href;
   // pour avoir le dernier segment de l'url
@@ -72,7 +74,7 @@ const Profiles = ({
       // qui passe dans le userMiddleware
       getOneMember();
     }
-  }, [lastSegmentUrl]);
+  }, [lastSegmentUrl, isLogged]);
 
   return (
     (foundMember && (foundMember.id === connectedUserId))
@@ -82,6 +84,7 @@ const Profiles = ({
           onWishToDeleteProfile={onWishToDeleteProfile}
           isDeleteModalClosed={isDeleteModalClosed}
           onDeleteProfile={onDeleteProfile}
+          isEditing={isEditing}
           editFormToggle={editFormToggle}
           editPhoto={editPhoto}
           editName={editName}
@@ -96,17 +99,13 @@ const Profiles = ({
           lastName={lastName}
           dateOfBirth={dateOfBirth}
           emailInput={emailInput}
-          password={password}
           description={description}
-          passwordShown={passwordShown}
-          togglePasswordVisibility={togglePasswordVisibility}
           onChangeProfileInput={onChangeProfileInput}
           handleSubmitPhoto={handleSubmitPhoto}
           handleSubmitName={handleSubmitName}
           handleSubmitEmail={handleSubmitEmail}
           handleSubmitBirthdate={handleSubmitBirthdate}
           handleSubmitDescription={handleSubmitDescription}
-          handleSubmitPassword={handleSubmitPassword}
           handleSubmitCity={handleSubmitCity}
           handleSubmitStyles={handleSubmitStyles}
           handleSubmitInstruments={handleSubmitInstruments}
@@ -120,6 +119,11 @@ const Profiles = ({
           removeInstrument={removeInstrument}
           deleteInstrumentAssociation={deleteInstrumentAssociation}
           friends={friends}
+          isProfileMenuOpen={isProfileMenuOpen}
+          toggleProfileMenuOpen={toggleProfileMenuOpen}
+          isLoading={isLoading}
+          deleteStyle={deleteStyle}
+          stylesData={stylesData}
         />
       ) : (
         <OtherProfile
@@ -131,6 +135,7 @@ const Profiles = ({
           wishToDeleteFriend={wishToDeleteFriend}
           isDeleteFriendModalOpen={isDeleteFriendModalOpen}
           deleteFromFriendList={deleteFromFriendList}
+          isLoading={isLoading}
         />
       )
   );
@@ -144,6 +149,7 @@ Profiles.propTypes = {
   getOneMember: PropTypes.func.isRequired,
   onWishToDeleteProfile: PropTypes.func,
   onDeleteProfile: PropTypes.func,
+  isEditing: PropTypes.bool.isRequired,
   isDeleteModalClosed: PropTypes.bool.isRequired,
   editFormToggle: PropTypes.func,
   editPhoto: PropTypes.bool.isRequired,
@@ -159,18 +165,16 @@ Profiles.propTypes = {
   lastName: PropTypes.string,
   dateOfBirth: PropTypes.string,
   emailInput: PropTypes.string.isRequired,
-  password: PropTypes.string,
   description: PropTypes.string.isRequired,
-  passwordShown: PropTypes.bool.isRequired,
-  togglePasswordVisibility: PropTypes.func,
   onChangeProfileInput: PropTypes.func,
   handleSubmitPhoto: PropTypes.func.isRequired,
   handleSubmitName: PropTypes.func.isRequired,
   handleSubmitEmail: PropTypes.func.isRequired,
   handleSubmitBirthdate: PropTypes.func.isRequired,
   handleSubmitDescription: PropTypes.func.isRequired,
-  handleSubmitPassword: PropTypes.func.isRequired,
   handleSubmitCity: PropTypes.func.isRequired,
+  deleteStyle: PropTypes.func.isRequired,
+  stylesData: PropTypes.array.isRequired,
   handleSubmitStyles: PropTypes.func.isRequired,
   handleSubmitInstruments: PropTypes.func.isRequired,
   city: PropTypes.string,
@@ -181,9 +185,7 @@ Profiles.propTypes = {
   levelsData: PropTypes.arrayOf(
     PropTypes.shape().isRequired,
   ).isRequired,
-  instruments: PropTypes.arrayOf(
-    PropTypes.shape().isRequired,
-  ).isRequired,
+  instruments: PropTypes.array,
   onSelectInput: PropTypes.func,
   addNewInstrument: PropTypes.func,
   removeInstrument: PropTypes.func,
@@ -192,7 +194,16 @@ Profiles.propTypes = {
   pendingInvitations: PropTypes.arrayOf(
     PropTypes.shape().isRequired,
   ).isRequired,
+  acceptedInvitations: PropTypes.arrayOf(
+    PropTypes.shape().isRequired,
+  ).isRequired,
   friends: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  wishToDeleteFriend: PropTypes.func.isRequired,
+  deleteFromFriendList: PropTypes.func.isRequired,
+  isDeleteFriendModalOpen: PropTypes.bool.isRequired,
+  isProfileMenuOpen: PropTypes.bool.isRequired,
+  toggleProfileMenuOpen: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 Profiles.defaultProps = {
@@ -200,19 +211,10 @@ Profiles.defaultProps = {
   onWishToDeleteProfile: null,
   onDeleteProfile: null,
   editFormToggle: null,
-  togglePasswordVisibility: null,
   onChangeProfileInput: null,
-  // handleSubmitPhoto: null,
-  // handleSubmitName: null,
-  // handleSubmitEmail: null,
-  // handleSubmitBirthdate: null,
-  // handleSubmitDescription: null,
-  // handleSubmitPassword: null,
-  // handleSubmitCity: null,
   firstName: '',
   lastName: '',
   dateOfBirth: '',
-  password: '',
   city: '',
   onCityChange: null,
   onSelectInput: null,
@@ -220,6 +222,7 @@ Profiles.defaultProps = {
   removeInstrument: null,
   deleteInstrumentAssociation: null,
   sendInvitation: null,
+  instruments: [],
 };
 
 export default Profiles;

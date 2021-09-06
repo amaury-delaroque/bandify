@@ -1,16 +1,10 @@
 .app {
-  width: 100%;
-
+  min-height: 100vh;
 }
 
-// DESKTOP LAYOUT
-@media screen and (min-width: 700px) {
-  .app {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    // height: 100vh;
+@media screen and (max-width: 700px) {
+  .maincontainer {
+    margin-top: 3rem;
   }
 }
 

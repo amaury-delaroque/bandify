@@ -3,21 +3,21 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import NavbarDesktop from 'src/containers/NavbarDesktop';
-import logoBandify from 'src/assets/logoBandify.svg';
+import logoBandify from 'src/assets/Logo_Bandify_final.png';
 import './style.scss';
 
 const Header = ({
   toggleIsMenuOpen, toggleIsChatroomOpen,
   isLogged, toggleIsNotificationsOpen,
-  notifications,
+  notifications, hideAllWindows,
 }) => (
   <header className="header">
-    <div className="header__bandify">
-      <Link to="/">
+    <Link to="/" onClick={hideAllWindows}>
+      <div className="header__bandify">
         <img src={logoBandify} alt="bandify" className="header__bandify--logo" />
-      </Link>
-      <h1 className="header__bandify--title">Bandify</h1>
-    </div>
+        <h1 className="header__bandify--title">Bandify</h1>
+      </div>
+    </Link>
 
     <div className="header__menu-buttons">
       {isLogged && (
@@ -60,6 +60,8 @@ Header.propTypes = {
   toggleIsChatroomOpen: PropTypes.func.isRequired,
   isLogged: PropTypes.bool.isRequired,
   toggleIsNotificationsOpen: PropTypes.func.isRequired,
+  hideAllWindows: PropTypes.func.isRequired,
+  notifications: PropTypes.arrayOf(PropTypes.shape().isRequired).isRequired,
 };
 
 export default Header;

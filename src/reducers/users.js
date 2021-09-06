@@ -25,12 +25,14 @@ export const initialState = {
       nom: '',
     },
     instruments: [{}],
+    sounds: [],
     styles: [{}],
     profil_image: '',
   },
   friends: [],
   pendingInvitations: [],
   acceptedInvitations: [],
+  isEditing: false,
   editPhoto: false,
   editName: false,
   editCity: false,
@@ -88,6 +90,11 @@ const reducer = (state = initialState, action = {}) => {
           user_password: '',
         },
       };
+    case 'TOGGLE_IS_EDITING':
+      return {
+        ...state,
+        isEditing: !state.isEditing,
+      };
     case 'CHANGE_INPUT_MODIFY_PROFILE':
       return {
         ...state,
@@ -104,6 +111,17 @@ const reducer = (state = initialState, action = {}) => {
           profil_image: action.user.profil_image,
         },
         editPhoto: false,
+      };
+    case 'SOUND_ADDED_SUCCESS':
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          sounds: [
+            ...state.user.sounds, action.sound,
+          ],
+        },
+        editSound: false,
       };
     case 'NAME_MODIFIED_SUCCESS':
       return {
@@ -182,21 +200,70 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         users: usersData,
       };
-
-    case 'CHANGE_INSTRUMENT_LEVEL_ON_PROFILE': {
-      const copyInstruments = [...state.instruments];
-      const instrumentAlreadyChoose = copyInstruments.find(
-        ({ instrument }) => instrument === action.value,
-      );
-      if (!instrumentAlreadyChoose || action.key === 'level') {
-        copyInstruments[action.index] = {
-          ...copyInstruments[action.index],
-          [action.key]: action.value,
-        };
-      }
+    case 'DELETE_INSTRUMENT_ASSOCIATION_SUCCESS': {
+      const filteredPlays = state.user.plays.filter((statePlay) => statePlay.id !== action.play.id);
       return {
         ...state,
-        instruments: copyInstruments,
+        user: {
+          ...state.user,
+          plays: filteredPlays,
+        },
+      };
+    }
+    case 'DELETE_STYLE_SUCCESS': {
+      const filteredStyles = state.user.styles.filter((stateStyle) => (
+        stateStyle.id !== action.style.id));
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          styles: filteredStyles,
+        },
+      };
+    }
+    case 'ADD_NEW_STYLE_SUCCESS': {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          styles: [
+            ...state.user.styles,
+            action.style,
+          ],
+        },
+      }; }
+    case 'ADD_INSTRUMENT_ASSOCIATION_SUCCESS': {
+      /* ICI on rajoute la nouvelle association d'instrument/level au member en la
+      rajoutant dans ses plays */
+      return {
+        ...state,
+      };
+    }
+    case 'ADD_NEW_INSTRUMENT_SUCCESS':
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          plays: [
+            ...state.user.plays, action.play,
+          ]
+          ,
+        },
+      };
+    case 'CHANGE_INSTRUMENT_LEVEL_ON_PROFILE': {
+      // const copyInstruments = [...state.instruments];
+      // const instrumentAlreadyChoose = copyInstruments.find(
+      //   ({ instrument }) => instrument === action.value,
+      // );
+      // if (!instrumentAlreadyChoose || action.key === 'level') {
+      //   copyInstruments[action.index] = {
+      //     ...copyInstruments[action.index],
+      //     [action.key]: action.value,
+      //   };
+      // }
+      return {
+        ...state,
+        // instruments: copyInstruments,
       };
     }
 
@@ -250,24 +317,85 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         acceptedInvitations: action.acceptedInvitations,
       };
-
-    case 'DELETE_FROM_FRIENDLIST_SUCCESS':
+    case 'REMOVE_FRIEND': {
+      const filteredFriends = state.friends.filter((f) => f.id === action.friend.id);
+      const filteredInvitations = state.acceptedInvitations.filter((inv) => (
+        inv.to !== action.friend.id || inv.from !== action.friend.id));
       return {
         ...state,
-        pendingInvitations: [
-          ...state.pendingInvitations.slice(0, action.indexPending),
-          ...state.pendingInvitations.slice(action.indexPending + 1),
+        friends: filteredFriends,
+        acceptedInvitations: filteredInvitations,
+      };
+    }
+    case 'DELETE_FROM_FRIENDLIST_SUCCESS': {
+      let friendToDelete;
+      if (action.invitation.to !== action.userId) friendToDelete = action.invitation.toMember;
+      if (action.invitation.from !== action.userId) friendToDelete = action.invitation.fromMember;
+      const filteredFriends = state.friends.filter((f) => f.id !== friendToDelete.id);
+      const filteredInvitations = state.acceptedInvitations.filter((i) => (
+        i.id !== action.invitation.id));
+      return {
+        ...state,
+
+        acceptedInvitations: filteredInvitations,
+        friends: filteredFriends,
+      };
+    }
+    case 'INVITATION_ACCEPTED': {
+      const filteredPendingInvitations = state.pendingInvitations.filter((inv) => (
+        inv.id !== action.invitation.id));
+      return {
+        ...state,
+        friends: [
+          ...state.friends,
+          action.invitation.toMember,
         ],
         acceptedInvitations: [
-          ...state.acceptedInvitations.slice(0, action.indexAccepted),
-          ...state.acceptedInvitations.slice(action.indexAccepted + 1),
+          ...state.acceptedInvitations,
+          // on ajoute l'invitation à notre tableau d'invitations accepétées
+          action.invitation,
         ],
-        friends: [
-          ...state.friends.slice(0, action.indexFriends),
-          ...state.friends.slice(action.indexFriends + 1),
-        ],
+        pendingInvitations: filteredPendingInvitations,
       };
-
+    }
+    case 'ON_ACCEPT_INVITATION_SUCCESS': {
+      const filteredPendingInvitations = state.pendingInvitations.filter((inv) => (
+        inv.id !== action.invitation.id));
+      return {
+        ...state,
+        friends: [
+          ...state.friends,
+          // on ajoute le membre à notre tableau de friends
+          action.futureFriend,
+        ],
+        acceptedInvitations: [
+          ...state.acceptedInvitations,
+          // on ajoute l'invitation à notre tableau d'invitations accepétées
+          action.invitation,
+        ],
+        pendingInvitations: filteredPendingInvitations,
+      };
+    }
+    case 'INVITATION_REFUSED': {
+      /* TODO RECUPERER L4INVITATION DANS LE DSIPATCH avant car ici pas d'accés
+      à l'invitation à retirer car j'ai besoin de fromMember */
+      const filteredInvitations = state.pendingInvitations.filter((inv) => (
+        inv.id !== action.invitation.id
+      ));
+      return {
+        ...state,
+        pendingInvitations: filteredInvitations,
+      };
+    }
+    case 'ON_DENY_INVITATION_SUCCESS': {
+      const filteredInvitations = state.pendingInvitations.filter((inv) => (
+        inv.id !== action.invitation.id
+      ));
+      return {
+        ...state,
+        pendingInvitations: filteredInvitations,
+      };
+    }
     default:
       return state;
   }

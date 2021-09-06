@@ -1,16 +1,15 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { firstLetterToUpper, restToLower } from 'src/selectors/city';
 
 const Friends = ({ friends }) => (
-  friends.map((friend) => (
-    <div className="myprofile__friends">
-      <Link to={`/member/${friend.id}`} key={friend.id}>
+  friends && friends.map((friend) => (
+    <div className="myprofile__friend" key={friend.id}>
+      <Link to={`/member/${friend.id}`}>
         <div className="myprofile__user--container">
-          <p className="myprofile__friends--description">Mes amis:</p>
-          {friend.profil_image && <img className="myprofile__friends--picture" src={`${process.env.BANDIFY_API_URL}/avatar/${friend.profil_image}`} alt="avatar du membre" />}
+          {/* <p className="myprofile__friend--description">Mes amis:</p> */}
+          {friend.profil_image && <img className="myprofile__friend--picture" src={`${process.env.BANDIFY_API_URL}/avatar/${friend.profil_image}`} alt="avatar du membre" />}
           <div className="myprofile__user--short">
             <p className="myprofile__user--name">{friend.firstname} {friend.lastname}</p>
             {friend.city && (
@@ -23,7 +22,7 @@ const Friends = ({ friends }) => (
         </div>
         {friend.plays && (
         <div className="myprofile__instrument">
-          <p className="myprofile__instrument--description">Ses instruments:</p>
+          <p className="myprofile__instrument--description">Ses instruments :</p>
           <ul className="myprofile__instrument--list">
             {friend.plays.map((play) => (
               play.id && (
@@ -38,7 +37,7 @@ const Friends = ({ friends }) => (
         )}
         {friend.styles && (
         <div className="myprofile__style">
-          <p className="myprofile__style--description">Ses goûts musicaux:</p>
+          <p className="myprofile__style--description">Ses goûts musicaux :</p>
           <ul className="myprofile__style--list">
             {friend.styles.map((musicStyle) => (
               musicStyle.id && (

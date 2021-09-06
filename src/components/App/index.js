@@ -1,6 +1,8 @@
 // == Import
 import React, { useEffect } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import {
+  Route, Switch, useLocation,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 // connected components
 import Home from 'src/containers/Home';
@@ -15,43 +17,22 @@ import Notifications from 'src/containers/Notifications';
 import Contact from 'src/components/Contact';
 import About from 'src/components/About';
 import Footer from 'src/components/Footer';
+import PageNotFound from 'src/components/PageNotFound';
+// import Loader from 'src/components/Loader';
 // == Import
 import './style.scss';
-import axios from 'axios';
 
 // == Composant
 export default function App({
-  isLogged, setReconnect, getInstruments,
+  isLoading, isLogged, getInstruments,
   getLevels, getMusicStyles, getDepartments,
-  getRegions, getMessages, getFriends, getPendingInvitations, getAcceptedInvitations,
+  getRegions, getMessages, getFriends, getPendingInvitations, getAcceptedInvitations, getInit,
 }) {
   // AU premier rendu, je veux recupérer mon token
   useEffect(() => {
-    // On récupère notre token
-    const token = localStorage.getItem('token');
-    // Si on en a un, on fait une requête vers le serveur
-    // En y emporter au passage, le "timbre" (headers : x-acces-token)
-    if (token && token !== undefined) {
-      axios.post(`${process.env.BANDIFY_API_URL}/checkToken`, {
-        headers: {
-          'x-acces-token': localStorage.getItem('token'),
-        },
-      })
-        .then((response) => {
-        // On crée un objet user en réponse, pour rester logger
-          if (response) {
-            const user = {
-              id: localStorage.getItem('userId'),
-              email: localStorage.getItem('userEmail'),
-              token: localStorage.getItem('token'),
-            };
-            setReconnect(user);
-          }
-        })
-        .catch(() => {
-          localStorage.clear();
-        });
-    }
+    /* LA GESTION DU TOKEN EST déplacé  DANS LE MIDDLEWARE D'AUTHENTIFICATION
+    de gestion du TOKEN avec l'action 'GET_INIT' */
+    getInit();
     getInstruments();
     getLevels();
     getMusicStyles();
@@ -67,6 +48,16 @@ export default function App({
       getMessages();
     }
   }, [isLogged]);
+
+  const location = useLocation();
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, [location]);
+
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
+
   return (
     <div className="app">
       <Navbar />
@@ -90,11 +81,11 @@ export default function App({
           <Route exact path="/about">
             <About />
           </Route>
-          <Route exact path="/profile" />
           <Route exact path="/search" component={Home} />
           {isLogged
             ? <Route exact path="/member/:profileId" component={Profiles} />
-            : <Redirect exact to="/" />}
+            : <Route component={PageNotFound} />}
+          <Route component={PageNotFound} />
         </Switch>
       </div>
       <Footer />
@@ -104,7 +95,6 @@ export default function App({
 
 App.propTypes = {
   isLogged: PropTypes.bool.isRequired,
-  setReconnect: PropTypes.func.isRequired,
   getInstruments: PropTypes.func.isRequired,
   getLevels: PropTypes.func.isRequired,
   getMusicStyles: PropTypes.func.isRequired,
@@ -113,6 +103,8 @@ App.propTypes = {
   getFriends: PropTypes.func.isRequired,
   getMessages: PropTypes.func.isRequired,
   getPendingInvitations: PropTypes.func.isRequired,
+  getAcceptedInvitations: PropTypes.func.isRequired,
+  getInit: PropTypes.func.isRequired,
 };
 
 // == Export

@@ -3,55 +3,260 @@
 @media screen and (max-width: 700px) {
   .notifications{
     &__container{
-        position: absolute;
+        position: sticky;
         display: block;
-        width: 70%;
-        padding: 1rem;
-        top: 25%;
-        right: 3%;
-        z-index: 1;
-        overflow: scroll;
+        width: 100%;
+        height: auto;
+        top: 75px;
+        z-index: 100;
+        overflow-y: scroll;
         background-color: vars.$fourthColor;
         transition: 0.5s ease-in-out;
-        border-radius: 0 0 3px 3px;
+        border-radius: vars.$borderRadius;
+        border: 1px solid vars.$secondColor;
+    }
+    &__accept-btn {
+      background-color: vars.$thirdColor;
+      border: none;
+      border-radius: vars.$borderRadius;
+      color: vars.$fourthColor;
+      margin-right: .5rem;
+    }
+    &__refuse-btn {
+      background-color: vars.$fifthColor;
+      border: none;
+      border-radius: vars.$borderRadius;
+      color: vars.$fourthColor;
+    }
+    &__title {
+      width: 80%;
+      color: vars.$seventhColor;
+    }
+    &__close-menu {
+      background-color: vars.$firstColor;
+      height: 30px;
+      position: relative;
     }
     &__ul{
-        margin: 1rem;
+        display: flex;
+        flex-direction: column-reverse;
+        background-color: vars.$fourthColor;
     }
     &__li{
-        padding: 0.2rem 0.3rem;
-        border-bottom: 1px solid vars.$fourthColor;
+        padding: .5rem;
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid vars.$secondColor;
+        width: 100%;
+        &--message{
+          cursor: pointer;
+          display: flex;
+          justify-content: space-around;
+        }
+        &--delete{
+          border: none;
+          background-color: vars.$thirdColor;
+          color: vars.$fourthColor;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+        }
+        &--friend{
+          cursor: pointer;
+          display: flex;
+          justify-content: space-around;
+        }
     }
     &__isHidden{
-        top: -100%;
+        position:relative;
+        top: -325px;
     }
   }
 }
 
+
+// TABLET
 @media screen and (min-width: 700px) {
   .notifications{
     &__container{
-        position: absolute;
+        position: sticky;
         display: block;
-        width: 20%;
-        padding: 1rem;
-        top: 7%;
-        right: 3%;
-        z-index: 1;
-        overflow: scroll;
-        background-color: #fff;
+        width: 45%;
+        height: auto;
+        top: 75px;
+        z-index: 100;
+        overflow-y: scroll;
+        background-color: vars.$fourthColor;
         transition: 0.5s ease-in-out;
-        border-radius: 0 0 3px 3px;
+        border-radius: vars.$borderRadius;
+        border: 1px solid vars.$secondColor;
+    }
+    &__accept-btn {
+      background-color: vars.$thirdColor;
+      border: none;
+      border-radius: vars.$borderRadius;
+      color: vars.$fourthColor;
+      margin-right: .5rem;
+    }
+    &__refuse-btn {
+      background-color: vars.$fifthColor;
+      border: none;
+      border-radius: vars.$borderRadius;
+      color: vars.$fourthColor;
+    }
+    &__title {
+      width: 80%;
+      color: vars.$seventhColor;
+    }
+    &__close-menu {
+      background-color: vars.$firstColor;
+      height: 30px;
+      position: relative;
     }
     &__ul{
-        margin: 1rem;
+        display: flex;
+        flex-direction: column-reverse;
+        background-color: vars.$fourthColor;
     }
     &__li{
-        padding: 0.2rem 0.3rem;
-        border-bottom: 1px solid #ccc;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid vars.$secondColor;
+        width: 100%;
+        &--message{
+          cursor: pointer;
+          display: flex;
+          justify-content: space-around;
+        }
+        &--delete{
+          border: none;
+          background-color: vars.$thirdColor;
+          color: vars.$fourthColor;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+        }
     }
     &__isHidden{
-        top: -100%;
+        position:relative;
+        top: -325px;
     }
   }
+}
+
+.close-menu-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  background: none;
+  appearance: none;
+  color: vars.$thirdColor;
+  z-index: 1;
+}
+
+.close-one-notif-btn {
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  background: none;
+  appearance: none;
+  color: vars.$thirdColor;
+  z-index: 1;
+}
+
+// DESKTOP
+@media screen and (min-width: 1024px) {
+  .notifications{
+    &__container{
+        position: sticky;
+        display: block;
+        width: 36.5%;
+        height: auto;
+        top: 75px;
+        z-index: 100;
+        overflow-y: scroll;
+        background-color: vars.$fourthColor;
+        transition: 0.5s ease-in-out;
+        border-radius: vars.$borderRadius;
+        border: 1px solid vars.$secondColor;
+    }
+    &__accept-btn {
+      background-color: vars.$thirdColor;
+      border: none;
+      border-radius: vars.$borderRadius;
+      color: vars.$fourthColor;
+      margin-right: .5rem;
+    }
+    &__refuse-btn {
+      background-color: vars.$fifthColor;
+      border: none;
+      border-radius: vars.$borderRadius;
+      color: vars.$fourthColor;
+    }
+    &__title {
+      width: 80%;
+      color: vars.$seventhColor;
+    }
+    &__close-menu {
+      background-color: vars.$firstColor;
+      height: 30px;
+      position: relative;
+    }
+    &__ul{
+        display: flex;
+        flex-direction: column-reverse;
+        background-color: vars.$fourthColor;
+    }
+    &__li{
+        padding: 1rem;
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid vars.$secondColor;
+        width: 100%;
+        &--message{
+          cursor: pointer;
+          display: flex;
+          justify-content: space-around;
+        }
+        &--delete{
+          border: none;
+          background-color: vars.$thirdColor;
+          color: vars.$fourthColor;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+        }
+    }
+    &__isHidden{
+        position:relative;
+        top: -325px;
+    }
+  }
+}
+
+.close-menu-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  background: none;
+  appearance: none;
+  color: vars.$thirdColor;
+  z-index: 1;
+}
+
+.close-one-notif-btn {
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  background: none;
+  appearance: none;
+  color: vars.$thirdColor;
+  z-index: 1;
 }

@@ -17,25 +17,28 @@ const Chatroom = ({
   friends,
 }) => (
   <div className={isChatroomOpen ? 'chatroom chatroom--open' : 'chatroom'}>
+    <div className="chatroom__close-menu">
+      <button type="button" onClick={toggleIsChatroomOpen} className="close-menu-btn">
+        <i className="fas fa-times" />
+      </button>
+    </div>
     <div className="chatroom__nav">
       <button
         type="button"
-        className="chatroom__nav-link"
+        className={`${isMessagesOpen ? 'chatroom__nav-link chatroom__nav-link--active' : 'chatroom__nav-link'}`}
         onClick={toggleIsMessagesOpen}
+        disabled={friends.length === 0}
       >
         Conversation
       </button>
       <button
         type="button"
-        className="chatroom__nav-link"
+        className={`${isFriendsListOpen ? 'chatroom__nav-link chatroom__nav-link--active' : 'chatroom__nav-link'}`}
         onClick={toggleIsFriendsListOpen}
       >
         Amis
       </button>
     </div>
-    <button type="button" onClick={toggleIsChatroomOpen} className="close-menu-btn">
-      <i className="fas fa-times" />
-    </button>
 
     {isMessagesOpen && (
     <div className="chatroom__discussion">

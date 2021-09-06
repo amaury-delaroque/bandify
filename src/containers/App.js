@@ -3,12 +3,15 @@ import App from 'src/components/App';
 
 const mapStateToProps = (state) => ({
   isLogged: state.login.isLogged,
-
+  isLoading: state.settings.isLoading,
 });
 
 // On créer une action 'RECONNECT_USER', en lui envoyer dans le payload
 // les infos qu'on a dans le "user" (App/UseEffect)
 const mapDispatchToProps = (dispatch) => ({
+  getInit: () => {
+    dispatch({ type: 'GET_INIT' });
+  },
   setReconnect: (user) => {
     dispatch({ type: 'RECONNECT_USER', user });
   },
