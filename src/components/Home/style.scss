@@ -14,6 +14,7 @@
   .slick-slide {
     width: 100%;
     height: 100%;
+    margin-top: .5rem;
   }
   .slick-arrow.slick-prev::before,
   .slick-arrow.slick-next::before {
@@ -26,7 +27,7 @@
   }
   .slick-arrow.slick-next {
     right: 47%;
-    top: 102%;
+    top: 95%;
     transform: rotate(270deg);
   }
   /* Slider */
@@ -110,6 +111,15 @@
         background-color: vars.$seventhColor;
         border-radius: vars.$borderRadius;
         border: 1px solid vars.$secondColor;
+      }
+
+      &-search-message {
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-align: center;
+        color: vars.$fourthColor;
+        margin: 2rem 0;
+        line-height: 1.5;
       }
     }
     &__user {
@@ -270,7 +280,6 @@
     width: 90%;
     height: auto;
     margin: 3rem auto 0;
-    
   
     &--users {
       width: 250px;
@@ -370,7 +379,8 @@
 
   /* Slider */
   .slick-slider {
-    width: 90%;
+    margin-top: 2rem;
+    width: 70%;
   }
   .slick-slide {
     padding: 0 1rem;
@@ -461,11 +471,24 @@
     }
   } // here
   &__cards {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    width: 80%;
+    width: auto;
     margin-bottom: 4rem;
+
+    &-search-message {
+      position: absolute;
+      width: fit-content;
+      top: -30px;
+      left: 0;
+      right: 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: vars.$fourthColor;
+      margin: 2rem auto;
+    }
   
     &--users {
       text-align: center;

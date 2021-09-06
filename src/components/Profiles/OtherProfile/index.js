@@ -8,6 +8,7 @@ import Loader from 'src/components/Loader';
 import 'src/components/Profiles/style.scss';
 import { firstLetterToUpper, restToLower } from 'src/selectors/city';
 import './style.scss';
+import Sounds from 'src/containers/Sounds';
 
 const OtherProfile = ({
   user, sendInvitation, pendingInvitations,
@@ -64,6 +65,7 @@ const OtherProfile = ({
           <div className="profile__cards">
             <div className="profile__cards--users">
               <div className="profile__user--container">
+                {!profil_image && <img className="friends-list__member--picture" src={`${process.env.BANDIFY_API_URL}/avatar/avatar.png`} alt="avatar du membre" />}
                 {profil_image && <img className="profile__user--picture" src={`${process.env.BANDIFY_API_URL}/avatar/${profil_image}`} alt="avatar du membre" />}
                 <div className="profile__user--short">
                   <p className="profile__user--name">{user.firstname} {user.lastname}</p>
@@ -104,6 +106,7 @@ const OtherProfile = ({
                 <p className="profile__user--description-title">Sa description:</p>
                 <p className="profile__user--description-content">{user.user_description}</p>
               </div>
+              {user.sounds[0] && <Sounds />}
               {plays && (
               <div className="profile__instrument">
                 <p className="profile__instrument--description">Ses instruments:</p>
@@ -145,6 +148,7 @@ const OtherProfile = ({
 
 OtherProfile.propTypes = {
   user: PropTypes.shape({
+    sounds: PropTypes.array.isRequired,
     id: PropTypes.number,
     firstname: PropTypes.string,
     lastname: PropTypes.string,

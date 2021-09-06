@@ -11,7 +11,8 @@ import './style.scss';
 // import 'slick-carousel/slick/slick-theme.css';
 
 const Home = ({
-  users, isLogged, getMembers, searchedUsers, loginId, isLoading, /* searchMessage, */
+  users, isLogged, getMembers, searchedUsers, loginId, isLoading,
+  resultsMessage, searchErrorMessage,
 }) => {
   useEffect(() => {
     if (isLogged) {
@@ -73,13 +74,15 @@ const Home = ({
             <div className="home__cards">
               {/* Option 1: on est loggué et on a effectué une recherche, on affiche le message
              contenant le résultat et on affiche les membres filtrés */}
-              {/* {searchedUsers && (
-              <p>{searchMessage}</p>
-            )} */}
+              {searchedUsers.length !== 0 ? (
+                <p className="home__cards-search-message">{resultsMessage}</p>
+              ) : (<p className="home__cards-search-message">{searchErrorMessage}</p>)}
+
               {searchedUsers.length !== 0 ? (
                 searchedUsers.map((searchedUser) => (
                   <Link to={`/member/${searchedUser.id}`} key={searchedUser.id} className="home__cards--users">
                     <div className="home__user--container">
+                      {!searchedUser.profil_image && <img className="friends-list__member--picture" src={`${process.env.BANDIFY_API_URL}/avatar/avatar.png`} alt="avatar du membre" />}
                       {searchedUser.profil_image && <img className="home__user--picture" src={`${process.env.BANDIFY_API_URL}/avatar/${searchedUser.profil_image}`} alt="avatar du membre" />}
                       <div className="home__user--short">
                         <p className="home__user--name">{searchedUser.firstname} {searchedUser.lastname}</p>
@@ -99,7 +102,7 @@ const Home = ({
                             play.id && (
                             <li className="home__instrument__tag" key={play.id}>
                               <span className="home__instrument__tag--name">{play.instrument.instrument_name}</span>
-                              <span className="home__instrument__tag--level">{play.level && play.level.level_name}</span>
+                              {play.level && <span className="home__instrument__tag--level">{play.level && play.level.level_name}</span>}
                             </li>
                             )
                           ))}
@@ -126,24 +129,25 @@ const Home = ({
               ) : (
               /* Option 2: on est loggué mais on a pas effectué de recherche,
              on affiche tous les membres */
-              // On affiche uniquement les 5 premiers membres
-                <Slider {...sliderSettings}>
-                  {/* <p>Glissez déposez ye ye yeah</p> */}
-                  {usersWithoutMe.slice(0, 5).map((user) => (
-                    <Link to={`/member/${user.id}`} key={user.id} className="home__cards--users">
-                      <div className="home__user--container">
-                        {user.profil_image && <img className="home__user--picture" src={`${process.env.BANDIFY_API_URL}/avatar/${user.profil_image}`} alt="avatar du membre" />}
-                        <div className="home__user--short">
-                          <p className="home__user--name">{user.firstname} {user.lastname}</p>
-                          {user.city && (
+                <>
+                  {/* // On affiche uniquement les 5 premiers membres */}
+                  <Slider {...sliderSettings}>
+                    {usersWithoutMe.slice(0, 5).map((user) => (
+                      <Link to={`/member/${user.id}`} key={user.id} className="home__cards--users">
+                        <div className="home__user--container">
+                          {!user.profil_image && <img className="friends-list__member--picture" src={`${process.env.BANDIFY_API_URL}/avatar/avatar.png`} alt="avatar du membre" />}
+                          {user.profil_image && <img className="home__user--picture" src={`${process.env.BANDIFY_API_URL}/avatar/${user.profil_image}`} alt="avatar du membre" />}
+                          <div className="home__user--short">
+                            <p className="home__user--name">{user.firstname} {user.lastname}</p>
+                            {user.city && (
                             <p className="home__user--city">
                               {firstLetterToUpper(restToLower(user.city.city_name))}
                               ({user.city.department_code})
                             </p>
-                          )}
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      {user.plays && (
+                        {user.plays && (
                         <div className="home__instrument">
                           <p className="home__instrument--description">Ses instruments:</p>
                           <ul className="home__instrument--list">
@@ -157,8 +161,8 @@ const Home = ({
                             ))}
                           </ul>
                         </div>
-                      )}
-                      {user.styles && (
+                        )}
+                        {user.styles && (
                         <div className="home__style">
                           <p className="home__style--description">Ses goûts musicaux:</p>
                           <ul className="home__style--list">
@@ -172,10 +176,11 @@ const Home = ({
                             ))}
                           </ul>
                         </div>
-                      )}
-                    </Link>
-                  ))}
-                </Slider>
+                        )}
+                      </Link>
+                    ))}
+                  </Slider>
+                </>
               )}
             </div>
           )}
@@ -236,7 +241,8 @@ Home.propTypes = {
   getMembers: PropTypes.func.isRequired,
   searchedUsers: PropTypes.array,
   isLoading: PropTypes.bool.isRequired,
-  // searchMessage: PropTypes.string,
+  resultsMessage: PropTypes.string,
+  searchErrorMessage: PropTypes.string,
 };
 Home.defaultProps = {
   users: [{
@@ -245,6 +251,7 @@ Home.defaultProps = {
   }],
   loginId: 0,
   searchedUsers: [],
-  // searchMessage: '',
+  resultsMessage: '',
+  searchErrorMessage: '',
 };
 export default Home;
