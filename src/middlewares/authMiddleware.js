@@ -3,10 +3,10 @@ import axios from 'axios';
 const authMiddleware = (store) => (next) => (action) => {
   const state = store.getState();
   if (action.type === 'GET_INIT') {
-    // On récupère notre token
+    // get the token
     const token = localStorage.getItem('token');
-    // Si on en a un, on fait une requête vers le serveur
-    // En y emporter au passage, le "timbre" (headers : x-acces-token)
+    // if we had one send a request to the serveur
+    // BY taking away, in passing the "timbre" (headers : x-acces-token)
     if (token && token !== undefined) {
       axios.post(`${process.env.BANDIFY_API_URL}/checkToken`, {
         headers: {
@@ -14,7 +14,7 @@ const authMiddleware = (store) => (next) => (action) => {
         },
       })
         .then((response) => {
-          // On crée un objet user en réponse, pour rester logger
+          // Create an objet user, to stay connected
           if (response) {
             const user = {
               id: localStorage.getItem('userId'),
@@ -34,8 +34,8 @@ const authMiddleware = (store) => (next) => (action) => {
     }
   }
   if (action.type === 'ON_LOGIN_SUBMIT') {
-    // on commence par récupérer un instantané du state
-    // dans lequel nous viendrons piocher email et password
+    // We start by taking a snapshot of the state
+    // in which we will pick email and password
 
     const options = {
       method: 'POST',
@@ -44,7 +44,7 @@ const authMiddleware = (store) => (next) => (action) => {
         'Content-Type': 'application/json',
       },
       data: {
-        // on vient chercher dans le state ce qui nous intéresse
+        // pincking in the state what we need
         email: state.login.email,
         user_password: state.login.password,
       },
@@ -52,9 +52,9 @@ const authMiddleware = (store) => (next) => (action) => {
 
     axios(options)
       .then((response) => {
-        // ON clear le localstorage au cas où avant
+        // ON clear the localstorage in case 
         localStorage.clear();
-        // On y STOCKE (setItem) les infos du user + le token
+        //  STOCKing(setItem) user informations + token
         localStorage.setItem('userId', response.data.id);
         localStorage.setItem('userEmail', response.data.email);
         localStorage.setItem('token', response.data.token);

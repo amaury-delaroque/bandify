@@ -14,11 +14,11 @@ const reducer = (state = initialState, action = {}) => {
     }
     case 'GET_ALL_INVITATIONS_NOTIFS': {
       /*
-        Au Login et au reconnect quand on fait l'appel à la BDD :
-          *récupérer toutes les invitations de status pending ou le user est invitation.toMember
-            copier chacune de ces invitations dans le tableau notifications
-          *récupérer tous les messages de status unread ou le receiver est message.reicever_id
-            copier chacune de ces messages dans le tableau notifications
+        At login and reconnect when making the call to the DB:
+          *retrieve all status pending invitations where the user is invitation.toMember
+            copy each of these invitations into the notifications table
+          *retrieve all unread status messages where the receiver is message.reicever_id
+            copy each of these messages into the notifications array
       */
 
       return {
@@ -62,9 +62,9 @@ const reducer = (state = initialState, action = {}) => {
       };
     case 'GET_NEW_MESSAGE': {
       /*
-        A chaque nouveau message que je reçois via le socket 'new message'
-        je l'ajoute au notifications. Cette action provient du middleware socket et
-        passe aussi dans le reducer settings pour ajouter le messages au tableau des messages
+        Each new message I receive via the 'new message' socket
+        I add it to the notifications. This action comes from the middleware socket and
+        also goes into the reducer settings to add the message to the message board
       */
       const foundSenderMessagesNotif = state.notifications.find((n) => n.notification === 'message' && (action.notif.sender.id === n.sender.id));
       if (foundSenderMessagesNotif) {
@@ -87,10 +87,10 @@ const reducer = (state = initialState, action = {}) => {
       };
     }
     case 'GET_NEW_INVITATION': {
-      /*
-        A chaque nouvelle invitation que je reçois via le socket 'new invitation'
-        je l'ajoute au notifications. Cette action provient du middleware socket et
-        passe aussi dans le reducer settings pour ajouter l'invitation au tableau des invitations
+     /*
+        Each time I receive a new invitation via the 'new invitation' socket
+        socket, I add it to the notifications. This action comes from the socket middleware and
+        also goes into the reducer settings to add the invitation to the invitation table
       */
       return {
         ...state,

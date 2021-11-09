@@ -33,7 +33,7 @@ const reducer = (state = initialState, action = {}) => {
         token: action.data.token,
       };
     }
-    // Action pour se reconnecter automatiquement si le token est valable
+    // Reconnect user if token available
     case 'RECONNECT_USER':
       return {
         ...state,
@@ -51,7 +51,7 @@ const reducer = (state = initialState, action = {}) => {
       };
 
     case 'ON_LOGOUT': {
-      // On clear le localStorage à la deconnexion du user
+      // On clear le localStorage logout of the user
       localStorage.clear();
       return {
         ...state,

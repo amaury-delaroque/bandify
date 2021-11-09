@@ -66,8 +66,8 @@ const reducer = (state = initialState, action = {}) => {
     case 'ON_SEARCH_SUBMIT_SUCCESS':
       return {
         ...state,
-        // pas le choix, faut passer par le reducer Users
-        // les users deviennent filtrés en fonction de la query de searchBar
+        // no choice, you have to go through the Users reducer
+        // users become filtered according to the searchBar query
         searchedUsers: action.searchedUsers,
       };
     case 'ON_SEARCH_SUBMIT_ERROR':
@@ -77,7 +77,7 @@ const reducer = (state = initialState, action = {}) => {
       };
     case 'ON_DELETE_PROFILE_SUCCESS':
     {
-      // On clear le localStorage lors d'une suppression d'un profil
+    
       localStorage.clear();
       return {
         ...state,
@@ -274,8 +274,7 @@ const reducer = (state = initialState, action = {}) => {
         },
       }; }
     case 'ADD_INSTRUMENT_ASSOCIATION_SUCCESS': {
-      /* ICI on rajoute la nouvelle association d'instrument/level au member en la
-      rajoutant dans ses plays */
+      /*  Adding the new association instrument level to the member in his plays */
       return {
         ...state,
       };
@@ -292,19 +291,10 @@ const reducer = (state = initialState, action = {}) => {
         },
       };
     case 'CHANGE_INSTRUMENT_LEVEL_ON_PROFILE': {
-      // const copyInstruments = [...state.instruments];
-      // const instrumentAlreadyChoose = copyInstruments.find(
-      //   ({ instrument }) => instrument === action.value,
-      // );
-      // if (!instrumentAlreadyChoose || action.key === 'level') {
-      //   copyInstruments[action.index] = {
-      //     ...copyInstruments[action.index],
-      //     [action.key]: action.value,
-      //   };
-      // }
+      
       return {
         ...state,
-        // instruments: copyInstruments,
+        
       };
     }
 
@@ -393,7 +383,7 @@ const reducer = (state = initialState, action = {}) => {
         ],
         acceptedInvitations: [
           ...state.acceptedInvitations,
-          // on ajoute l'invitation à notre tableau d'invitations accepétées
+          // add this invitation to the accepted invitation array
           action.invitation,
         ],
         pendingInvitations: filteredPendingInvitations,
@@ -406,20 +396,19 @@ const reducer = (state = initialState, action = {}) => {
         ...state,
         friends: [
           ...state.friends,
-          // on ajoute le membre à notre tableau de friends
+          // adding the member to our friends array
           action.futureFriend,
         ],
         acceptedInvitations: [
           ...state.acceptedInvitations,
-          // on ajoute l'invitation à notre tableau d'invitations accepétées
+          // invitations accepted add array
           action.invitation,
         ],
         pendingInvitations: filteredPendingInvitations,
       };
     }
     case 'INVITATION_REFUSED': {
-      /* TODO RECUPERER L4INVITATION DANS LE DSIPATCH avant car ici pas d'accés
-      à l'invitation à retirer car j'ai besoin de fromMember */
+     
       const filteredInvitations = state.pendingInvitations.filter((inv) => (
         inv.id !== action.invitation.id
       ));
