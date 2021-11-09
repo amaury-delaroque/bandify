@@ -12,7 +12,7 @@ const CLIENT_SIDE = process.env.CLIENT_SIDE;
 
 const { addMemberOnline, removeMemberOnline, findUserOnline} = require('./sockets/users');
 
-// Création du module Swagger 
+// Creation swagger module
 
 let swaggerOptions = {
    swaggerDefinition: {
@@ -34,7 +34,7 @@ let swaggerOptions = {
 };
 expressSwagger(swaggerOptions);
 
-// Création du module Socket.io
+// Creation of Socket.io module
 
 const io = socketio(server, {
     cors: {
@@ -50,7 +50,7 @@ app.use( cors('https://www.bandify.fr') );
 
 app.use(express.urlencoded({extended: true})); 
 
-// ajout d' une méthode pour vérifier les données d'un formulaire avec sanitizer
+// added a method to check form data with sanitizer
 
 app.use( (req, res, next) => {
     if (req.body) {
@@ -63,7 +63,7 @@ app.use( (req, res, next) => {
 
 app.use(router);
 
-//TESTS SOCKETS => CREER UN TABLEAU DE MEMBER ONLINE ET LE RENVOYER AU FRONT
+//TESTS SOCKETS => Creater an array of only members and sending back to the front
 io.on('connect', (socket) => {
     socket.on('newMember', (newMember)=> {
         io.emit('new-member', newMember);
@@ -97,7 +97,7 @@ io.on('connect', (socket) => {
             }
         });
         socket.on('invitationAccepted', (payload) => {
-            //prévoir le changement de status de l'invitation => 1
+            // prevent changement status of the invitation
             const foundReiceverOnline = findUserOnline(payload.futureFriend.id);
             const invitation = {
                 ...payload.invitation,
@@ -108,7 +108,7 @@ io.on('connect', (socket) => {
             }
         })
         socket.on('invitationRefused', (payload) => {
-            //prévoir le changement de status de l'invitation => 2
+            //prevent the changement => 2
             const foundReceiverOnline = findUserOnline(payload.refusedMember.id);
             const invitation = {
                 ...payload.invitation,

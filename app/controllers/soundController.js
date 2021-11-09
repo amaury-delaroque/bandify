@@ -60,7 +60,7 @@ const soundController = {
         }
     },
 
-    // Supprimer un son pour un membre
+    // delete sound
     
     deleteSound: async (req, res, next) => {
         try {
@@ -72,11 +72,11 @@ const soundController = {
                 }
             });
 
-            // Si y'a au moins 1 membre de supprimer alors :
+            
             if (nbDeletedSound > 0) {
                 res.json({message: "ok, son supprimé"});
             } else {
-                next(); // On envoie une 404
+                next(); // 404
             }
 
         } catch (error) {

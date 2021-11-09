@@ -2,7 +2,7 @@ const { MusicStyle } = require('../models');
 
 const musicStylesController = {
 
-    // Récuperer la liste de tout les styles musicaux par odre alphabétique
+    // Retrieve the list of all musical styles in alphabetical order
 
     getAllMusicStyles: async (req, res, next) => {
         try {
@@ -17,7 +17,7 @@ const musicStylesController = {
         }
     },
 
-    // Récuperer un style de musique selon son id
+    // Get a music style by an id
     
     getOneMusicStyle: async (req, res, next) => {
         try {

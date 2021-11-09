@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 
 const messageController = {
     
-    // Récuperer tout les messages
+    // Get all messages
 
     getAllMessages: async (req, res, next) => {
 
@@ -18,7 +18,7 @@ const messageController = {
         }
     },
     
-    // Envoyer un message entre deux membres
+    // Sending messages between 2 members
 
     sendMessage: async (req, res, next) => {
         try {
@@ -37,7 +37,7 @@ const messageController = {
         }
     },
 
-    // Lire un message envoyé d' un membre a un autre selon l' id
+    // Read a message sent from one member to another by id
 
     readMessage: async (req, res, next) => {
         try {
@@ -59,7 +59,7 @@ const messageController = {
     },
 
 
-    // Passer le statut de false a true quand un message est lu
+    // Change the status from false to true when a message is read
     
     updateMessageStatus : async (req, res, next) => {
         try {

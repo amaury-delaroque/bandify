@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 
 const localisationController = {
 
-    // Récuperer la liste de toutes les Villes
+    // Get the list of all cities
 
     getAllCities: async (req, res, next) => {
         try {
@@ -40,7 +40,7 @@ const localisationController = {
         }
     },
 
-    // Récuperer une ville
+    // Get a city
 
     getOneCity: async (req, res, next) => {
         const id = req.params.id;
@@ -54,7 +54,7 @@ const localisationController = {
         }
     },
 
-    // Récuperer la liste de tout les départements
+    // Get a list of all department
 
     getAllDepartments: async (req, res, next) => {
         try {
@@ -67,7 +67,7 @@ const localisationController = {
         }
     },
 
-    // Récuperer un département
+    // Get a department
 
     getOneDepartment: async (req, res, next) => {
         const id = req.params.id;
@@ -81,7 +81,7 @@ const localisationController = {
         }
     },
 
-    // Récuperer la liste de toutes les régions
+    // Get the list of all region
 
     getAllRegions: async (req, res, next) => {
         try {
@@ -94,7 +94,7 @@ const localisationController = {
         }
     },
 
-    // Récuperer une région
+    // Get one region
 
     getOneRegion: async (req, res, next) => {
         const id = req.params.id;

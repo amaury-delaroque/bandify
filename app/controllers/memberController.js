@@ -1,7 +1,7 @@
 const { Member, Play } = require('../models');
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
-// const memberSchema = require('../validations/schema')
+
 
 const { uploadFile, getFileStream } = require('../../s3');
 /* Mise en place de Multer qui nous permets de récupérer un multipart form-data depuis le front
@@ -11,7 +11,7 @@ const { uploadFile, getFileStream } = require('../../s3');
 
 const memberController = {
 
-    // Récuperer la liste de tout les membres
+    // Get the list of all members
     getAllMembers: async (req, res, next) => {
         try {
             const members = await Member.findAll();
@@ -24,7 +24,7 @@ const memberController = {
         }
     },
 
-    // Récuperer un membre selon son Id
+    // Get a member by his id 
 
     getOneMember: async (req, res, next) => {
         try {
@@ -44,7 +44,7 @@ const memberController = {
         }
     },
 
-    // Créer un membre a l' inscription
+    // Create a member at registration
 
     createMember: async (req, res) => {
         try {
@@ -52,10 +52,8 @@ const memberController = {
             let result;
             if(file) result = await uploadFile(file);
 
-            // req.body contient les informations nécessaires pour créer 
-            // un nouveau membre
             
-             // On lui hash le password => le 3ième argument de la fonction hash est un cazllback, qui nous donne accés à l'erreur si erreur ou au mdp hashé
+             // We hash the password => the 3rd argument of the hash function is a cazllback, which gives us access to the error if error or the hashed mdp
             passwordHashed = bcrypt.hash(req.body.user_password, 10, async (err, hash) =>{
                 if(err) return err;
                 const foundMember = await Member.findOne({
@@ -68,10 +66,10 @@ const memberController = {
                         error: 'Un utilisateur à déjà utiliser cette adresse email pour s\'inscirire'
                     });
                 }
-                 // Les array passés dans le req.body via le formulaire doivent être décodé pour y avoir accés;
+                 // Arrays passed into the req.body via the form must be decoded to be accessed;
                 const instruments = JSON.parse(req.body.instruments);
                 const styles = JSON.parse(req.body.styles);
-                 // On créé un membre avec les infos récup du body et le mdp hashé
+                 // We create a member with the info retrieved from the body and the hashed mdp
                 const member = await Member.create({
                     firstname: req.body.firstname,
                     lastname: req.body.lastname,
@@ -83,21 +81,21 @@ const memberController = {
                     profil_image: file ? `${result.key}`: null,
                     })
             
-                 // Si le membre à séléctionné des styles, on boucle dessus pour associer chaque style au member
+                 // If the member has selected styles, we loop over them to associate each style with the member
                 if(styles) {
                     styles.map(async (style)=> await member.addStyle(Number(style))) 
                 }
 
-                // const result = await memberSchema.validateAsync(req.body);
+              
 
-                 // On boucle sur chaque objet instruments pour créer l'association
+                 //  Loop on every objects instruments to create the association
                 instruments.map(async (play) => play.instrument && await Play.create({
                   instrument_id: play.instrument,
                   member_id: member.id,
                   level_id: play.level
                 }));
                 const newMember = await Member.findByPk(member.id);
-                // Envoi de la réponse au front si tout est ok
+                // If everything's ok sending this to the front
                 res.json({
                     success : 'New Member added', member: newMember
                 });
@@ -110,29 +108,29 @@ const memberController = {
         }
     },
 
-    // Mettre a jour les infos d' un membre
+    // Update informations user
 
     updateOneMember: async (req, res, next) => {
         try {
-            // On utilise l'id de la cible, dans les params d'url
+            //Id of the target in url
 
             const targetId = req.params.id;
-            // on passe par une instance
+            // go through an instance
             const memberToUpdate = await Member.findByPk(targetId);
             if (!memberToUpdate) {
 
-                return next(); // <= pas de liste, 404
+                return next(); // <= no list, 404
             }
             if(req.body.user_password) {
-                // Lors d'un update (modification de mot de passe par exemple)
-                // On hash à nouveau le mot de passe
+                // When update
+                // hashing the password again
              const passwordHashed = await bcrypt.hash(req.body.user_password, 10);
              req.body.user_password = passwordHashed;
             }
             if(req.body.styles) {
                return req.body.styles.map(async (style)=> await memberToUpdate.addStyle(Number(style))) 
             }
-            // On boucle sur chaque objet instruments pour créer l'association
+            // Loop on every objects to create the association
             if(req.body.instrument) {
                 req.body.instruments.map(async (play) => play.instrument && await Play.findOrCreate({
                     instrument_id: play.instrument,
@@ -148,7 +146,7 @@ const memberController = {
                 result = await uploadFile(file);
                 req.body.profil_image = result.key;
             } 
-            // Et les nouvelles valeurs des props, dans le body
+            // New props in the body
                 await memberToUpdate.update(req.body);
 
                 const member = await Member.findByPk(targetId)
@@ -161,7 +159,7 @@ const memberController = {
         }
     },
 
-    // Supprimer un membre
+    // delete a member
 
     deleteOneMember: async (req, res, next) => {
         try {
@@ -173,11 +171,11 @@ const memberController = {
                 }
             });
 
-            // Si y'a au moins 1 membre de supprimer alors :
+            // If at least one member deleted
             if (nbDeletedMember > 0) {
                 res.json({message: "ok, membre supprimé"});
             } else {
-                next(); // On envoie une 404
+                next(); //  404
             }
 
         } catch (error) {
@@ -186,12 +184,12 @@ const memberController = {
         }
     },
 
-    // Se connecter pour un membre
+    // Login member
 
     loginMember : async (req, res) => {
         try {
             
-          // On vérifie qu'un membre correspond au mail entré par l'utilisateur
+          // checking that a member matches with email
           const member = await Member.findOne({
               where: {
                   email: req.body.email
@@ -201,16 +199,16 @@ const memberController = {
               }
           });
 
-          // Si on trouve pas on passe dans le catch
+          // if dont find 
           if(!member) {
             throw({error : 'Identifiants incorrects'});
           }
       
-          // On compare avec bcrypt les mot de passes
+          // compare passwords with bcrypt
           const passwordToCompare=member.user_password;
           const isPasswordValid = await bcrypt.compare(req.body.user_password, passwordToCompare);
   
-          // Si le mot de passe n'est pas valide on passe dans le catch
+          
           if(!isPasswordValid) {
             throw({error : 'Identifiants incorrects'});
           }
@@ -222,7 +220,7 @@ const memberController = {
           algorithm: 'HS256', 
           expiresIn: '3h' 
         };
-          // Envoi de la réponse au front si tout est ok
+          // Response to the front if everything's ok
           
           res.json({
           id: member.id,
@@ -231,12 +229,12 @@ const memberController = {
           });
   
         } catch(err) {
-          // Envoi de l'erreur au front s'il y en a une
+          // sending error if not
           console.trace(err);
             res.status(401).send(err);
         }
     },
-    // Middleware qui permet d'accéder au fichier statique d'avatar des membres
+    // Middleware which allows access to the static avatar file of the members
     streamMemberAvatar: (req, res) => {
         try{
             const key = req.params.key;
@@ -249,7 +247,7 @@ const memberController = {
         }
 
     },
-    // "Middleware" qui vérifie si notre token est bon
+    // "Middleware" checking if its a good token
     verifyJWT: (req, res, next) => {
         const token = req.headers["x-acces-token"] || req.body.headers["x-acces-token"];
         

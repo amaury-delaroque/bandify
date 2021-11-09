@@ -4,7 +4,7 @@ const { findByPk } = require('../models/sound');
 
 const invitationController = {
 
-    // Requete qui permet de voir la liste des invitations en attente de réponse de la part d' un membre
+    // Request that allows to see the list of invitations waiting to be answered by a member
 
     getAllInvitations: async (req, res, next) => {
         try {
@@ -21,7 +21,7 @@ const invitationController = {
         }
     },
 
-    // Envoyer une invitation a un membre
+    // Sending an invitation to a member
 
     sendInvitation : async (req, res, next) => {
         try {
@@ -45,7 +45,7 @@ const invitationController = {
         }
     },
 
-    // Refuser une invitation
+    // Refusing an invitation
 
     deleteInvitation: async (req, res, next) => {
         try {
@@ -70,7 +70,7 @@ const invitationController = {
         }
     },
 
-    // Accepter une invitation
+    // Accepting an invitation
 
     updateInvitation : async (req, res, next) => {
         try {
@@ -94,7 +94,7 @@ const invitationController = {
     },
 
 
-    // Nous appelons "Friends" quand le statut est a "1"
+    // We called this "Friends" when the statut is "1"
 
     getAllFriends: async (req, res, next) => {
         try {
@@ -133,7 +133,7 @@ const invitationController = {
         }
     },
 
-    // Non l'appelons "PendingInvitations" quand le statut est "0"
+    // We called "PendingInvitations" when the statut is "0"
 
     getPendingInvitations: async (req, res, next) => {
         try {

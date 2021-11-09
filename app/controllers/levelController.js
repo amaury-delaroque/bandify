@@ -2,7 +2,7 @@ const { Level } = require('../models');
 
 const levelController = {
 
-    // Récuperer tout les niveaux
+    // Get all levels
 
     getAllLevel: async (req, res, next) => {
         try {
@@ -14,7 +14,7 @@ const levelController = {
         }
     },
 
-    // Récuperer un niveau
+    // Get on elevel
     
     getOneLevel : async (req, res, next) => {
         try {

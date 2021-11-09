@@ -1,7 +1,7 @@
 const { Member, Instrument, Level, Play, MusicStyle } = require('../models');
 
 const associationController = {
-  // CONTROLLERS DES ASSOCIATIONS MEMBER/INSTRUMENTS/LEVELS via la table PLAY
+  // CONTROLLERS OF ASSOCIATIONS MEMBER/INSTRUMENTS/LEVELS through table PLAY
   getMemberInstruments: async (req, res, next) => {
     try {
       const memberId = req.params.id;
@@ -35,23 +35,23 @@ const associationController = {
   },
   updateMemberInstruments: async (req, res, next) => {
         try {
-          //Je récupère les paramètres de la requête PATCH, ici l'id du membre 
+          //Getting params of the PATCH request, member id here 
           const memberId = Number(req.params.id);
-          //Je récupère les paramètres du body, un instrument_id et/ou un level 
+          //Get the params of the body, an instrument_id and/or a level 
           const instrumentId = Number(req.body.instrument_id);
           const levelId = Number(req.body.level_id) || null;
-          //Je vérifie que le membre et l'instrument sont bien des numbers et qu'ils existe bien en BDD, sinon je sort
+          //Checking that member and instruments are numbers and that they exist in database, otherwise im leaving
           if(memberId === NaN || instrumentId === NaN) return next();
           const member = await Member.findByPk(memberId);
           const instrument = await Instrument.findByPk(instrumentId);
-          // Si au moins 1 des 2 n'existent pas on return
+          // If at least 1 of the 2 does not exist we return
           if(!member || !instrument) return next();
-          //on vérifie si une association existe déjà entre le membre et l'instrument
+          // checking if an association already exists bteween members and instrument
           const alreadyExist = await Play.findOne({where : {
             member_id : memberId,
             instrument_id: instrumentId,
           }});
-          // Si on trouve une association et que l'utilisateur n'as pas envoyer de level_id, on return car l'association existe déjà
+          // If an association is found and the user has not sent a level_id, we return because the association already exists
           if(alreadyExist && !levelId){
             return next();
           } else if (!alreadyExist && !levelId) {
@@ -69,7 +69,7 @@ const associationController = {
             })
             return res.json(member);
           }
-          // Si on trouve une association on la supprime car ici le membre peut juste vouloir updater son niveau, on associe donc les 3 (user, instru, level)
+          // If we find an association we delete it because here the member may just want to update his level, so we associate the 3 (user, instrument, level)
           if (levelId && levelId !== NaN) {
             if(alreadyExist) alreadyExist.destroy();
             const level = await Level.findByPk(levelId);
@@ -81,7 +81,7 @@ const associationController = {
                 level_id: levelId
               }
             });
-            // on renvoi toute les associations instruments / levels correspondantes au membre
+            // send back all the associations instrument/level referred to member
             const member = await Play.findAll({
               where : {
                 member_id : memberId,
@@ -90,7 +90,7 @@ const associationController = {
             })
             return res.json(member);
           };
-          // Si le level_id n'a pas été renseigner par l'utilisateur on associe le membre et l'instrument, si l'association n'existe pas déjà
+          // If the level_id has not been filled in by the user, the member and the instrument are associated, if the association does not already exist
           if(!levelId) {
             await Play.findOrCreate({
               where : {
@@ -98,7 +98,7 @@ const associationController = {
                 instrument_id: Number(instrument_id)
               }
             });
-            // on renvoi toute les associations instruments / levels correspondantes au membre
+            // all corresponding instrument/level associations are referred to the member
             const member = await Play.findAll({
               where : {
                 member_id : memberId,
@@ -115,17 +115,17 @@ const associationController = {
   },
   deleteMemberInstruments: async (req, res, next) => {
     try {
-      //Je récupère les paramètres de la requête DELETE, ici l'id du membre 
+      //I get the parameters of the DELETE request, here the member id
       const memberId = Number(req.params.id);
-      //Je récupère les paramètres du body, un instrument_id
+      //I get the parameters of the body, an instrument_id
       const instrumentId = Number(req.body.instrument_id);
-      //Je vérifie que le membre et l'instrument sont bien des numbers et qu'ils existe bien en BDD, sinon je sort
+      
       if(memberId === NaN || instrumentId === NaN) return next();
       const member = await Member.findByPk(memberId);
       const instrument = await Instrument.findByPk(instrumentId);
-      // Si au moins 1 des 2 n'existent pas on return
+      // If at least 1 of the 2 does not exist we return
       if(!member || !instrument) return next();
-      //on vérifie si une association existe déjà entre le membre et l'instrument
+      //whether an association already exists between the member and the instrument
       const alreadyExist = await Play.findOne({where : {
         member_id : memberId,
         instrument_id: instrumentId,
@@ -134,7 +134,7 @@ const associationController = {
         alreadyExist.destroy();
         return res.json({message : 'Delete Association Member Instruments Successfull'})
       };
-      // Si il n'y a rien a supprimer on next jsuqu'a la 404
+      // If there's nothing to delete => 404
       next();
     } catch(error) {
       console.trace(error);
@@ -142,7 +142,7 @@ const associationController = {
     }
   },
 
-  // CONTROLLERS DES ASSOCIATIONS MEMBER/MusicStyles
+  // CONTROLLERS ASSOCIATIONS MEMBER/MusicStyles
   getMemberMusicStyles: async (req, res, next) => {
     try {
       const memberId = Number(req.params.id);
@@ -155,23 +155,23 @@ const associationController = {
   },
   updateMemberMusicStyles: async (req, res, next) => {
       try {
-        //Je récupère les paramètres de la requête PATCH, ici l'id du membre en params et musicStyle_id en body
+        //I get the parameters of the PATCH request, here the member id in params and musicStyle_id in body
         const memberId = Number(req.params.id);
         const musicStyleId = Number(req.body.musicstyle_id);
-        // Si un paramètre à mal été renseigné (autre que nombre) ou est manquant on next
+        // If a parameter has been filled in incorrectly (other than number) or is missing, we next
         if((!musicStyleId || musicStyleId === NaN) || (!memberId || memberId === NaN)) return next();
-        //on recherche si le membre et le style existe bien
+        //searching if the member does exist
         const member = await Member.findByPk(memberId, {
           include: 'styles'
         });
         const musicStyle = await MusicStyle.findByPk(musicStyleId);
-        // Si a  u moins un des 2 n'existe pas, on next  
+        // If at least one of the two does not exist => next 
         if (!member || !musicStyle) {
             return next();
         }
-        // Sinon on fait l'association => Sequelize nous met à disposition une methode addStyle
+        // Otherwise we make the association => Sequelize provides us with an addStyle method
         await member.addStyle(musicStyle);
-        // on renvoi le membre updaté avec son association syur les styles
+        // send back the member updated with his association on the styles
         const memberUpdate = await Member.findByPk(memberId, {include: 'styles'});
         return res.json(memberUpdate);
 
@@ -183,17 +183,17 @@ const associationController = {
   },
   deleteMemberMusicStyles: async (req, res, next) => {
     try {
-      //Je récupère les paramètres de la requête PATCH, ici l'id du membre en params et musicStyle_id en body
+      // Same thing
       const memberId = Number(req.params.id);
       const musicStyleId = Number(req.body.musicstyle_id);
-      // Si un paramètre à mal été renseigné (autre que nombre) ou est manquant on next
+      
       if((!musicStyleId || musicStyleId === NaN) || (!memberId || memberId === NaN)) return next();
-      //on recherche si le membre et le style existe bien
+      // checking if the member does exists
       const member = await Member.findByPk(memberId, {
         include: 'styles'
       });
       const musicStyle = await MusicStyle.findByPk(musicStyleId);
-      // Si a  u moins un des 2 n'existe pas, on next  
+      
       if (!member || !musicStyle) {
           return next();
       }
